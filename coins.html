@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <style>
+  body{
+  background-color:darkslategrey;
+  font-family: Arial, sans-serif;
+  }
+
+      #data-container {
+        /* background-image:-webkit-linear-gradient(#E3AFBC,#EE4C7C) ; */
+        /* background-color: white; */
+        /* height: 100vh; */
+        padding: 20px;
+      }
+
+      #coin-container {
+        display: grid;
+        /* grid-template-columns: repeat(4, 300px); */
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        justify-items: center;
+        /* column-gap: 50px; */
+        /* row-gap: 10px; */
+        /* margin-left: 80px;
+        margin-top: 20px; */
+        padding-top: 20px;
+      }
+      
+      #image:hover{
+transform: scale(1.3);
+      }
+
+      .coinElement {
+        text-align: center;
+        /* margin-top: 22px; */
+        width:200px;
+        border-radius: 20px;
+        background-image: -webkit-linear-gradient(#96EFFF,#E7BCDE);
+        /* background-color: white; */
+        padding: 10px;
+        cursor: pointer;
+      }
+
+.coinElement:hover{
+  box-shadow:0 0 10px 5px #AF2655 ;
+}
+
+#footer {
+    position: fixed;
+    bottom: 0;
+    /* margin-top: -300px; */
+    width: 100%;
+    /* height: 30px; */
+    background-color: #f0f0f0;
+    padding: 10px;
+    text-align: center;
+    
+  }
+
+      #prev-page {
+        /* margin-left: 1270px; */
+        /* margin-top: 20px; */
+        /* width: 100px; */
+        /* height: 30px; */
+        font-weight: bold;
+        font-size: 16px;
+        border-radius: 10px;
+        cursor: pointer;
+        margin: 0 10px;
+        padding: 5px 10px;
+        background-color: blue;
+        color: white;
+        border: none;
+        outline: none;
+      }
+
+      #next-page {
+        width: 100px;
+        /* height: 30px; */
+        font-weight: bold;
+        font-size: 16px;
+        border-radius: 10px;
+        cursor: pointer;
+        margin: 0 10px;
+        padding: 5px 10px;
+        background-color: blue;
+        color: white;
+        border: none;
+        outline: none;
+      }
+
+      .navbar{
+        /* border: 1px solid black; */
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        background-color: black;
+        color: white;
+      }
+
+      .img{
+        height: 40px;
+        width: 60px;
+        margin-left: 20px;
+        border-radius: 10px;
+        /* margin-top: -3px; */
+      }
+      .home{
+        /* color: white; */
+        cursor: pointer;
+        /* margin-top: -50px; */
+        /* margin-left: 1300px; */
+        font-size: 18px;
+        margin-right: 20px;
+      }
+
+      @media screen and (max-width: 768px) {
+    /* .navbar {
+        height: 80px;
+    } */
+    
+    .coinElement{
+      font-size: 14px;
+    }
+
+    .home {
+        /* margin-left: 20px; */
+        /* margin-top: -10px; */
+        font-size: 16px;
+    }
+}
+
+    </style>
+  </head>
+  <body>
+
+    <div class="navbar">
+      <img class="img" src="https://w7.pngwing.com/pngs/476/650/png-transparent-investment-cryptocurrency-bitcoin-business-private-equity-column-saving-service-bank-thumbnail.png">
+      <h2 class="home">Back to Home</h2>
+    </div>
+
+
+    <div id="data-container">
+      <div id="coin-container">
+
+      </div>
+    </div>
+
+    <div id="footer">
+      <button id="prev-page">Previous</button>
+      <button id="next-page">Next</button>
+    </div>
+
+
+    <script>
+      debugger;
+
+let homeElements=document.getElementsByClassName("home")
+let home=homeElements[0];
+home.addEventListener("click",function(){
+  window.location.href="./home-2.html";
+})
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const dataContainer = document.getElementById("data-container");
+        const prevButton = document.getElementById("prev-page");
+        const nextButton = document.getElementById("next-page");
+        const itemsPerPage = 12; 
+        let currentPage = 1;
+        let data; 
+
+
+        function fetchDataAndDisplay() {
+          fetch(
+            "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd"
+          )
+            .then((response) => response.json())
+            .then((responseData) => {
+              data = responseData; 
+              DisplayData(); 
+              updatePageButtons(); 
+            })
+
+            .catch((error) => {
+              console.error("Error fetching data:", error);
+            });
+        }
+
+
+        function DisplayData() {
+          const startIndex = (currentPage - 1) * itemsPerPage;
+          const endIndex = currentPage * itemsPerPage;
+          const slicedData = data.slice(startIndex, endIndex);
+
+
+          const container = document.createElement("div");
+          container.setAttribute("id", "coin-container");
+
+
+          slicedData.forEach((coin) => {
+            const coinElement = document.createElement("div");
+            coinElement.setAttribute("class", "coinElement"); 
+            coinElement.style.border = "1px solid black";
+            coinElement.style.marginBottom = "10px";
+            coinElement.style.padding = "10px";
+            // coinElement.style.backgroundColor = "grey";
+
+
+            coinElement.addEventListener('click', () => {
+              showCoinDetails(coin);
+      });
+
+
+            const imageElement = document.createElement("img");
+            imageElement.setAttribute("id","image")
+            imageElement.src = coin.image;
+            imageElement.style.width = "70px";
+
+
+            const nameElement = document.createElement("h2");
+            nameElement.textContent = coin.name;
+
+
+            const priceElement = document.createElement("p");
+            priceElement.textContent = "Price: $" + coin.current_price;
+            priceElement.style.fontWeight="bold";
+            priceElement.style.fontSize="18px";
+
+
+            coinElement.appendChild(imageElement);
+            coinElement.appendChild(nameElement);
+            coinElement.appendChild(priceElement);
+
+            container.appendChild(coinElement);
+          });
+
+
+           dataContainer.innerHTML = "";
+           dataContainer.appendChild(container);
+        }
+
+
+        function updatePageButtons() {
+          prevButton.disabled = currentPage === 1; 
+          nextButton.disabled =
+            currentPage === Math.ceil(data.length / itemsPerPage); 
+        }
+
+
+        prevButton.addEventListener("click", () => {
+          prevButton.style.backgroundColor = "blue";
+          prevButton.style.color = "white";
+          if (currentPage > 1) {
+            currentPage--;
+            DisplayData();
+            updatePageButtons();
+          }
+        });
+
+
+        nextButton.addEventListener("click", () => {
+          nextButton.style.backgroundColor = "blue";
+          nextButton.style.color = "white";
+
+
+          if (currentPage < Math.ceil(data.length / itemsPerPage)) {
+            currentPage++;
+            DisplayData();
+            updatePageButtons();
+          }
+        });
+
+        fetchDataAndDisplay();
+      });
+
+      function showCoinDetails(coin) 
+      {
+  window.localStorage.setItem("coinDetails", JSON.stringify(coin));
+  window.location.href = "./coins-details.html";
+
+      }
+    </script>
+  </body>
+</html>`

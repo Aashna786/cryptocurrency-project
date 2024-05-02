@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coin Details</title>
+
+<style>
+
+    body{
+        /* background-image:url("https://media.istockphoto.com/id/1490620838/photo/financial-data-stock-market-trading-and-investments-business-and-economy.webp?b=1&s=170667a&w=0&k=20&c=57WSN3jWmt5lp5YrjPwYIC2ivqD6m-wV6U8N9UkEeEo="); */
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-image: url("https://img.freepik.com/free-vector/gradient-technological-background_23-2148884155.jpg?size=626&ext=jpg&ga=GA1.1.1917120133.1705665811&semt=ais");
+        
+    }
+
+    #coin-detailscontainer{
+        /* margin-left: 780px; */
+        /* margin-top: 40px; */
+        margin: 40px auto;
+        font-weight: bold;
+        font-size: 20px;
+        /* background-color:white; */
+        background-color: rgba(255, 255, 255, 0.8);
+        /* width: 450px; */
+        width: 90%;
+        max-width: 450px;
+        /* height: 420px; */
+        text-align: center;
+        padding: 20px;
+        border-radius: 20px;
+        background-image: -webkit-linear-gradient(#D198C5FF,#E0C568FF);
+        /* box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.5); */
+    }
+
+.coin-info-container{
+  color: black;
+  /* background-color: white; */
+  /* background-color: rgba(255, 255, 255, 0.8); */
+  /* height: 420px; */
+  /* width: 450px; */
+  width: 90%;
+  max-width: 450px;
+  /* margin-top: -460px; */
+  /* margin-left: 250px; */
+  margin:20px auto; ;
+  text-align: center;
+  border-radius: 20px;
+  font-weight: bold;
+  padding: 20px;
+  font-size: 20px;
+  background-image:-webkit-linear-gradient(#D198C5FF,#E0C568FF) ;
+  /* box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.5); */
+}
+.coin-info-container img{
+  width: 170px;
+  height: 170px;
+  margin-top: 20px;
+  border-radius: 50%;
+}
+
+.key{
+  font-style:italic;
+}
+
+.value{
+font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.navbar{
+  /* border: 1px solid white; */
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 20px;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+h3{
+  color:white;
+  cursor: pointer;
+  margin-left: 1300px;
+  font-size: 25px;
+}
+
+#priceElement{
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  /* font-style:normal; */
+}
+
+@media screen and (max-width: 768px) {
+    .navbar {
+        height: 80px;
+        justify-content: center;
+    }
+    .btd {
+        /* margin-left: 20px; */
+        /* margin-top: -10px; */
+        font-size: 16px;
+    }
+
+    #coin-detailscontainer,
+            .coin-info-container {
+                font-size: 18px;
+            }
+
+            .coin-info-container img {
+                width: 120px;
+                height: 120px;
+                margin-top: 10px;
+            }
+}
+</style>
+</head>
+<body>
+
+ <div class="navbar">
+  <h3 class="btd">Back to Coins<h3>
+ </div> 
+
+<div id="coin-detailscontainer"></div>
+
+<script>
+
+let BackElement=document.getElementsByClassName("btd")
+let Back=BackElement[0]
+
+Back.addEventListener("click", function(){
+
+  window.location.href="./coins.html";
+
+})
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  const coinDetailsContainer = document.getElementById("coin-detailscontainer");
+  let coinDetails = window.localStorage.getItem("coinDetails");
+
+  try {
+      coinDetails = JSON.parse(coinDetails);
+  } 
+  catch (error) 
+  {
+      console.error("Failed to parse coinDetails:", error);
+      coinDetailsContainer.textContent = "Failed to parse coin details.";
+      return;
+  }
+
+  if (coinDetails) {
+      
+      const coinInfoContainer = document.createElement("div");
+      coinInfoContainer.className = "coin-info-container";
+
+      
+      const imageElement = document.createElement("img");
+      imageElement.src = coinDetails.image;
+
+      const nameElement = document.createElement("h2");
+      nameElement.textContent = coinDetails.name;
+
+      const priceElement = document.createElement("p");
+      priceElement.setAttribute("id","priceElement")
+      priceElement.textContent = "Price: $" + coinDetails.current_price.toFixed(2);
+      
+
+      
+      coinInfoContainer.appendChild(imageElement);
+      coinInfoContainer.appendChild(nameElement);
+      coinInfoContainer.appendChild(priceElement);
+
+  
+      document.body.appendChild(coinInfoContainer);
+
+      
+      coinDetailsContainer.innerHTML = `
+          <p><span class="key">CURRENT PRICE:</span> <span class="value">${coinDetails.current_price}</p></span>
+          <p><span class="key">High in 24H:</span><span class="value"> ${coinDetails.high_24h}</p></span>
+          <p><span class="key">Low in 24H:</span> <span class="value">${coinDetails.low_24h}</p></span>
+          <p><span class="key">Price Change in 24H:</span><span class="value"> ${coinDetails.price_change_24h}</p></span>
+          <p><span class="key">Market Cap Change:</span> <span class="value">${coinDetails.market_cap_change_24h}</p></span>
+          <p><span class="key">Circulating Supply:</span> <span class="value">${coinDetails.circulating_supply}</p></span>
+          <p><span class="key">Total Supply:</span> <span class="value">${coinDetails.total_supply}</p></span>
+          <p><span class="key">Max Supply:</span> <span class="value">${coinDetails.max_supply}</p></span>
+          <p><span class="key">Last Updated:</span> <span class="value">${coinDetails.last_updated}</p></span>
+      `;
+  } 
+  else {
+      coinDetailsContainer.textContent = "Coin details not found.";
+  }
+});
+
+</script>
+</body>
+</html>
+
